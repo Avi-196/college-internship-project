@@ -22,19 +22,21 @@ const createIntern=async function(req,res){
             res.status(400).send({status:false,msg:"collegeId is required"})
             return
         }
-        // let uniqueName=await internModel.findOne({name:data.name})
-        // if(uniqueName){
-        //    return res.status(406).send({status:false,msg:"name is already taken same name not acceptable"})
-        // }
-        let uniqueEmail=await internModel.findOne({email:data.email})
-          if(uniqueEmail){
+    
+        let Email=await internModel.findOne({email:data.email})
+          if(Email){
             return  res.status(406).send({status:false,msg:"this email is already taken not acceptable"})
           }
 
-          let uniqueMobile=await internModel.findOne({mobile:data.mobile})
-          if(uniqueMobile){
+          let Mobile=await internModel.findOne({mobile:data.mobile})
+          if(Mobile){
             return  res.status(406).send({status:false,msg:"this mobile is already taken not acceptable"})
           }
+          let collegeId=await internModel.findOne({collegeId:data.collegeId})
+              if(!collegeId){
+                  return res.status(400).send({status:false,msg:"please provide right collegeId"})
+              }
+          
 
           let internCreate=await internModel.create(data)
          return res.status(201).send({status:true,data:internCreate})
