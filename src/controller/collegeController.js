@@ -6,8 +6,6 @@ const internModel=require('../models/internModel')
 const collegeCreated = async function (req, res) {
     try {
 
-        
-
         const data = req.body;
        
         if (!data.name) {
@@ -18,10 +16,15 @@ const collegeCreated = async function (req, res) {
             res.status(400).send({ status: false, message: 'full name is required' })
             return
         }
+           
         if (!data.logoLink) {
             res.status(400).send({ status: false, message: 'logo link is required' })
             return
         }
+      
+ if(!(/^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/i.test(data.logoLink))){
+            return res.status(400).send({status:false,msg:"logolink is invalid"})
+          }
 
         let Name = await collegeModel.findOne({name:data.name})
         if(Name){
@@ -32,6 +35,7 @@ const collegeCreated = async function (req, res) {
         if(FullName){
         return res.status(400).send({status:false,msg:"full  name already exist"})
         }
+     
 
         let collegeCreate = await collegeModel.create(data)
        return res.status(201).send({ status: true, data: collegeCreate })
@@ -67,9 +71,8 @@ const collegeDetails = async function (req, res) {
   
       if (internDetails.length == 0) {
         result["Interest"] = "no interns";
-        return res.status(400).send({ data: result })
+        return res.status(404).send({ data: result })
       }
-  
   
     } catch (err) {
       return res.status(500).send({ msg: err.message })
